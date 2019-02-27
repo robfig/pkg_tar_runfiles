@@ -1,0 +1,26 @@
+load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
+load("@io_bazel_rules_go//go:def.bzl", "go_binary")
+
+filegroup(
+    name = "assets",
+    srcs = glob(["public/**"]),
+)
+
+go_binary(
+    name = "app",
+    srcs = ["main.go"],
+    data = [":assets", "config.json", "@pkg_tar_external//:data"],
+    deps = [
+        "//shared/libraries/some_lib",
+    ],
+)
+
+pkg_tar(
+    name = "app_deploy",
+    extension = "tar",
+    srcs = [":app"],
+    strip_prefix = ".",
+    include_runfiles = True,
+    remap_paths = { "..": "external" },
+    #        package_dir = native.package_name(),
+)

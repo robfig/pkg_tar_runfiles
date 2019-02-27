@@ -1,0 +1,16 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "optional_files",
+    srcs = glob(["optional_files/**"]),
+)
+
+
+go_library(
+    name = "some_lib",
+    srcs = ["some_lib.go"],
+    data = [":optional_files", "file.txt", ],
+    importpath = "shared/libraries/some_lib",
+)
